@@ -1,14 +1,18 @@
 <?php
 
 use Slim\App;
-use App\Controllers\HomeController;
+use App\Controllers\TodoController;
 
 return function (App $app) {
-    $container = $app->getContainer();
+    $app->get('/todos', TodoController::class . ':index');
 
-    $app->group('/v1', function () use ($container) {
-        $this->get('', HomeController::class . ':index')->setName('home');
+    $app->post('/todos', TodoController::class . ':store');
 
-        $this->get('/users/{user}', HomeController::class . ':me')->setName('me');
-    });
+    $app->put('/todos', TodoController::class . ':updateAll');
+
+    $app->put('/todos/{todo}', TodoController::class . ':update');
+
+    $app->delete('/todos/completed', TodoController::class . ':deleteCompleted');
+
+    $app->delete('/todos/{todo}', TodoController::class . ':delete');
 };
