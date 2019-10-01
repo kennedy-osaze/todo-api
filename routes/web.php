@@ -1,18 +1,26 @@
 <?php
 
 use Slim\App;
+use App\Middleware\Authenticate;
 use App\Controllers\TodoController;
+use App\Controllers\AuthController;
 
 return function (App $app) {
-    $app->get('/todos', TodoController::class . ':index');
+    $app->post('/register', AuthController::class . ':register');
 
-    $app->post('/todos', TodoController::class . ':store');
+    $app->post('/login', AuthController::class . ':login');
 
-    $app->put('/todos', TodoController::class . ':updateAll');
+    $app->group('', function () use ($app) {
+        $app->get('/todos', TodoController::class . ':index');
 
-    $app->put('/todos/{todo}', TodoController::class . ':update');
+        $app->post('/todos', TodoController::class . ':store');
 
-    $app->delete('/todos/completed', TodoController::class . ':deleteCompleted');
+        $app->put('/todos', TodoController::class . ':updateAll');
 
-    $app->delete('/todos/{todo}', TodoController::class . ':delete');
+        $app->put('/todos/{todo}', TodoController::class . ':update');
+
+        $app->delete('/todos/completed', TodoController::class . ':deleteCompleted');
+
+        $app->delete('/todos/{todo}', TodoController::class . ':delete');
+    })->add(new Authenticate($app->getContainer()));
 };

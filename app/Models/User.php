@@ -15,6 +15,10 @@ class User extends Model implements AuthenticableInterface, JwtSubjectInterface
         'name', 'email', 'password'
     ];
 
+    protected $hidden = [
+        'password'
+    ];
+
     public function getJwtIdentifier()
     {
         return $this->getKey();
